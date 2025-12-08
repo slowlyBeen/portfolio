@@ -42,12 +42,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
-        
+
         .glass-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
         }
-        
+
         .glass-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -79,387 +79,392 @@
             display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Error Border Style (Shake animation) */
+        .input-error {
+            border-color: #ef4444 !important; /* Red color */
+            animation: shake 0.3s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
 </head>
 <body class="relative min-h-screen selection:bg-pink-500 selection:text-white">
 
-    <!-- Dynamic Background Layer -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <div class="blob blob-1 rounded-full mix-blend-screen" id="blob1"></div>
-        <div class="blob blob-2 rounded-full mix-blend-screen" id="blob2"></div>
-        <div class="blob blob-3 rounded-full mix-blend-screen" id="blob3"></div>
-        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
+<!-- Dynamic Background Layer -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="blob blob-1 rounded-full mix-blend-screen" id="blob1"></div>
+    <div class="blob blob-2 rounded-full mix-blend-screen" id="blob2"></div>
+    <div class="blob blob-3 rounded-full mix-blend-screen" id="blob3"></div>
+    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150"></div>
+</div>
+
+<!-- Navigation (Floating Glass Dock) -->
+<nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
+    <div class="glass px-6 py-3 rounded-full flex items-center gap-8 text-sm font-medium text-gray-300">
+        <a href="#home" class="hover:text-white transition-colors relative group">
+            <i data-lucide="home" class="w-5 h-5 mb-1 mx-auto"></i>
+            <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">홈</span>
+        </a>
+        <a href="#about" class="hover:text-white transition-colors relative group">
+            <i data-lucide="user" class="w-5 h-5 mb-1 mx-auto"></i>
+            <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">역량</span>
+        </a>
+        <a href="#projects" class="hover:text-white transition-colors relative group">
+            <i data-lucide="layers" class="w-5 h-5 mb-1 mx-auto"></i>
+            <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">프로젝트</span>
+        </a>
+        <a href="#contact" class="hover:text-white transition-colors relative group">
+            <i data-lucide="mail" class="w-5 h-5 mb-1 mx-auto"></i>
+            <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">연락</span>
+        </a>
     </div>
+</nav>
 
-    <!-- Navigation (Floating Glass Dock) -->
-    <nav class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-        <div class="glass px-6 py-3 rounded-full flex items-center gap-8 text-sm font-medium text-gray-300">
-            <a href="#home" class="hover:text-white transition-colors relative group">
-                <i data-lucide="home" class="w-5 h-5 mb-1 mx-auto"></i>
-                <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">홈</span>
-            </a>
-            <a href="#about" class="hover:text-white transition-colors relative group">
-                <i data-lucide="user" class="w-5 h-5 mb-1 mx-auto"></i>
-                <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">역량</span>
-            </a>
-            <a href="#projects" class="hover:text-white transition-colors relative group">
-                <i data-lucide="layers" class="w-5 h-5 mb-1 mx-auto"></i>
-                <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">프로젝트</span>
-            </a>
-            <a href="#contact" class="hover:text-white transition-colors relative group">
-                <i data-lucide="mail" class="w-5 h-5 mb-1 mx-auto"></i>
-                <span class="text-[10px] absolute -bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">연락</span>
-            </a>
+<!-- Project Details Modal -->
+<div id="projectModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" id="modalOverlay"></div>
+    <div class="glass w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col relative transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+
+        <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+            <h3 id="modalTitle" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Project Title</h3>
+            <button id="closeModal" class="p-2 rounded-full hover:bg-white/10 transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
         </div>
-    </nav>
 
-    <!-- Project Details Modal -->
-    <!-- FIX: Added transition utilities directly here and removed buggy custom class -->
-    <div id="projectModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 transition-opacity duration-300">
-        <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" id="modalOverlay"></div>
-        
-        <!-- Modal Content with Transform Transition -->
-        <div class="glass w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col relative transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
-            
-            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
-                <h3 id="modalTitle" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Project Title</h3>
-                <button id="closeModal" class="p-2 rounded-full hover:bg-white/10 transition-colors">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto p-0 md:flex">
-                <!-- Left: Summary -->
-                <div class="md:w-4/12 bg-black/20 p-6 flex flex-col gap-6 border-r border-white/5">
-                    <div class="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Role & Duration</h4>
-                        <p id="modalRole" class="text-sm text-white font-medium mb-1">Backend Lead</p>
-                        <p id="modalDuration" class="text-xs text-gray-400">2023.01 - 2023.08 (8개월)</p>
-                    </div>
-
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tech Stack</h4>
-                        <div id="modalTechStack" class="flex flex-wrap gap-2"></div>
-                    </div>
-
-                    <div>
-                         <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Key Metric</h4>
-                         <div id="modalMetric" class="text-3xl font-bold text-blue-400"></div>
-                         <p class="text-xs text-gray-400 mt-1">성능 개선 지표</p>
-                    </div>
+        <div class="flex-1 overflow-y-auto p-0 md:flex">
+            <!-- Left: Summary -->
+            <div class="md:w-4/12 bg-black/20 p-6 flex flex-col gap-6 border-r border-white/5">
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Role & Duration</h4>
+                    <p id="modalRole" class="text-sm text-white font-medium mb-1">Backend Lead</p>
+                    <p id="modalDuration" class="text-xs text-gray-400">2023.01 - 2023.08 (8개월)</p>
                 </div>
 
-                <!-- Right: Details (STAR Method focus) -->
-                <div class="md:w-8/12 p-8">
-                    <div class="mb-8">
-                        <h4 class="text-lg font-bold mb-3 flex items-center gap-2 text-white">
-                            <i data-lucide="target" class="w-5 h-5 text-red-400"></i> 문제 정의 (Challenge)
-                        </h4>
-                        <p id="modalChallenge" class="text-gray-300 leading-relaxed text-sm bg-white/5 p-4 rounded-lg border border-white/5"></p>
-                    </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tech Stack</h4>
+                    <div id="modalTechStack" class="flex flex-wrap gap-2"></div>
+                </div>
 
-                    <div class="mb-8">
-                        <h4 class="text-lg font-bold mb-3 flex items-center gap-2 text-white">
-                            <i data-lucide="wrench" class="w-5 h-5 text-blue-400"></i> 해결 과정 (Solution)
-                        </h4>
-                        <ul id="modalSolution" class="space-y-3 text-sm text-gray-300 list-disc pl-5 marker:text-blue-500"></ul>
-                    </div>
-                    
-                     <div class="mb-6">
-                        <h4 class="text-lg font-bold mb-3 flex items-center gap-2 text-white">
-                            <i data-lucide="trophy" class="w-5 h-5 text-yellow-400"></i> 성과 (Result)
-                        </h4>
-                        <p id="modalResult" class="text-gray-300 leading-relaxed text-sm"></p>
-                    </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Key Metric</h4>
+                    <div id="modalMetric" class="text-3xl font-bold text-blue-400"></div>
+                    <p class="text-xs text-gray-400 mt-1">성능 개선 지표</p>
+                </div>
+            </div>
+
+            <!-- Right: Details (STAR Method focus) -->
+            <div class="md:w-8/12 p-8">
+                <div class="mb-8">
+                    <h4 class="text-lg font-bold mb-3 flex items-center gap-2 text-white">
+                        <i data-lucide="target" class="w-5 h-5 text-red-400"></i> 문제 정의 (Challenge)
+                    </h4>
+                    <p id="modalChallenge" class="text-gray-300 leading-relaxed text-sm bg-white/5 p-4 rounded-lg border border-white/5"></p>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="text-lg font-bold mb-3 flex items-center gap-2 text-white">
+                        <i data-lucide="wrench" class="w-5 h-5 text-blue-400"></i> 해결 과정 (Solution)
+                    </h4>
+                    <ul id="modalSolution" class="space-y-3 text-sm text-gray-300 list-disc pl-5 marker:text-blue-500"></ul>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="text-lg font-bold mb-3 flex items-center gap-2 text-white">
+                        <i data-lucide="trophy" class="w-5 h-5 text-yellow-400"></i> 성과 (Result)
+                    </h4>
+                    <p id="modalResult" class="text-gray-300 leading-relaxed text-sm"></p>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Main Content -->
-    <main class="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-32">
-        <!-- ... (Hero and About sections remain unchanged) ... -->
-        
-        <!-- Hero Section -->
-        <section id="home" class="min-h-[80vh] flex flex-col justify-center items-start">
-            <div class="glass p-10 md:p-16 rounded-[2rem] w-full relative overflow-hidden group">
-                <div class="absolute -right-20 -top-20 opacity-20">
-                     <!-- SVG Decor -->
-                    <svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#3B82F6" d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.6,-46.6C91.4,-34.1,98.1,-19.2,95.8,-4.1C93.5,11.1,82.2,26.4,71.2,39.6C60.2,52.8,49.5,63.9,37,70.9C24.5,77.9,10.2,80.8,-3.3,86.5C-16.8,92.2,-29.5,100.7,-40.4,96.8C-51.3,92.9,-60.4,76.6,-69.3,62.1C-78.2,47.6,-86.9,34.9,-88.7,21.3C-90.5,7.7,-85.4,-6.8,-77.9,-19.7C-70.4,-32.6,-60.5,-43.9,-49.2,-52.3C-37.9,-60.7,-25.2,-66.2,-12.3,-68.2C0.6,-70.2,13.5,-68.7,30.5,-83.6" transform="translate(100 100)" />
-                    </svg>
-                </div>
-                
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-bold tracking-wider mb-6 border border-green-500/20">
+<!-- Main Content -->
+<main class="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20 flex flex-col gap-32">
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-[80vh] flex flex-col justify-center items-start">
+        <div class="glass p-10 md:p-16 rounded-[2rem] w-full relative overflow-hidden group">
+            <div class="absolute -right-20 -top-20 opacity-20">
+                <!-- SVG Decor -->
+                <svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#3B82F6" d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,81.6,-46.6C91.4,-34.1,98.1,-19.2,95.8,-4.1C93.5,11.1,82.2,26.4,71.2,39.6C60.2,52.8,49.5,63.9,37,70.9C24.5,77.9,10.2,80.8,-3.3,86.5C-16.8,92.2,-29.5,100.7,-40.4,96.8C-51.3,92.9,-60.4,76.6,-69.3,62.1C-78.2,47.6,-86.9,34.9,-88.7,21.3C-90.5,7.7,-85.4,-6.8,-77.9,-19.7C-70.4,-32.6,-60.5,-43.9,-49.2,-52.3C-37.9,-60.7,-25.2,-66.2,-12.3,-68.2C0.6,-70.2,13.5,-68.7,30.5,-83.6" transform="translate(100 100)" />
+                </svg>
+            </div>
+
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-bold tracking-wider mb-6 border border-green-500/20">
                     <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                     Open to Work
                 </span>
-                
-                <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-tight">
-                    안녕하세요, <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-tight">
+                안녕하세요, <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
                         데이터 중심 백엔드 개발자
                     </span><br>
-                    김제미 입니다.
-                </h1>
-                
-                <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10 leading-relaxed font-light">
-                    단순히 기능을 구현하는 것을 넘어, <strong>시스템의 안정성</strong>과 <strong>확장성</strong>을 고민합니다.<br>
-                    비효율적인 쿼리를 튜닝하고, 아키텍처를 개선하여 비즈니스 비용을 절감하는 과정에서 희열을 느낍니다.<br>
-                    최근에는 Gemini API를 활용한 <strong>AI 파이프라인 구축</strong>에 몰입하고 있습니다.
-                </p>
+                김제미 입니다.
+            </h1>
 
-                <div class="flex flex-wrap gap-4">
-                    <a href="#projects" class="px-8 py-4 rounded-xl bg-white text-gray-900 font-bold hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-lg shadow-white/10">
-                        프로젝트 성과 보기 <i data-lucide="arrow-down" class="w-4 h-4"></i>
-                    </a>
-                    <a href="https://github.com" target="_blank" class="px-8 py-4 rounded-xl glass hover:bg-white/10 transition-colors font-medium flex items-center gap-2">
-                        <i data-lucide="github" class="w-4 h-4"></i> Github
-                    </a>
-                </div>
-            </div>
-        </section>
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mb-10 leading-relaxed font-light">
+                단순히 기능을 구현하는 것을 넘어, <strong>시스템의 안정성</strong>과 <strong>확장성</strong>을 고민합니다.<br>
+                비효율적인 쿼리를 튜닝하고, 아키텍처를 개선하여 비즈니스 비용을 절감하는 과정에서 희열을 느낍니다.<br>
+                최근에는 Gemini API를 활용한 <strong>AI 파이프라인 구축</strong>에 몰입하고 있습니다.
+            </p>
 
-        <!-- Competency & Tech Stack -->
-        <section id="about">
-             <div class="flex items-center gap-4 mb-10">
-                <h2 class="text-3xl font-bold text-white">Core Competencies</h2>
-                <div class="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent"></div>
+            <div class="flex flex-wrap gap-4">
+                <a href="#projects" class="px-8 py-4 rounded-xl bg-white text-gray-900 font-bold hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-lg shadow-white/10">
+                    프로젝트 성과 보기 <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                </a>
+                <a href="https://github.com" target="_blank" class="px-8 py-4 rounded-xl glass hover:bg-white/10 transition-colors font-medium flex items-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4"></i> Github
+                </a>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="glass p-6 rounded-2xl border-t-2 border-t-blue-500">
-                    <div class="bg-blue-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                        <i data-lucide="server" class="text-blue-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Backend Architecture</h3>
-                    <p class="text-gray-400 text-sm">MSA 설계 및 모놀리식의 분리 경험 보유. 대용량 트래픽 처리를 위한 분산 시스템 이해.</p>
-                </div>
-                <div class="glass p-6 rounded-2xl border-t-2 border-t-green-500">
-                    <div class="bg-green-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                        <i data-lucide="database" class="text-green-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Database Optimization</h3>
-                    <p class="text-gray-400 text-sm">Slow Query 튜닝, 인덱스 최적화, Redis 캐싱 전략 수립을 통한 DB 부하 감소.</p>
-                </div>
-                <div class="glass p-6 rounded-2xl border-t-2 border-t-purple-500">
-                    <div class="bg-purple-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                        <i data-lucide="brain-circuit" class="text-purple-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">AI Integration</h3>
-                    <p class="text-gray-400 text-sm">LLM API 연동 및 프롬프트 엔지니어링. 기존 레거시 시스템에 AI 기능을 통합하는 Vibe Coding.</p>
-                </div>
-                <div class="glass p-6 rounded-2xl border-t-2 border-t-orange-500">
-                    <div class="bg-orange-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                        <i data-lucide="users" class="text-orange-400 w-6 h-6"></i>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Collaboration</h3>
-                    <p class="text-gray-400 text-sm">명확한 API 문서화(Swagger) 및 코드 리뷰 문화 주도. 타 부서와의 원활한 커뮤니케이션.</p>
-                </div>
-            </div>
-            
-            <div class="mt-10 glass rounded-2xl p-8">
-                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Tech Stack</h3>
-                <div class="space-y-4">
-                    <div class="flex flex-col md:flex-row gap-4 md:items-center">
-                        <span class="w-24 font-bold text-gray-300">Languages</span>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Java 17</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Kotlin</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">JavaScript/TypeScript</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Python</span>
-                        </div>
-                    </div>
-                    <div class="h-px bg-white/5 w-full"></div>
-                    <div class="flex flex-col md:flex-row gap-4 md:items-center">
-                        <span class="w-24 font-bold text-gray-300">Frameworks</span>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Spring Boot 3</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">JPA/Hibernate</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">NestJS</span>
-                        </div>
-                    </div>
-                    <div class="h-px bg-white/5 w-full"></div>
-                    <div class="flex flex-col md:flex-row gap-4 md:items-center">
-                        <span class="w-24 font-bold text-gray-300">Infra & DB</span>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">AWS</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Docker/K8s</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">MySQL</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Redis</span>
-                            <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Kafka</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Projects Section -->
-        <section id="projects">
-            <div class="flex items-center gap-4 mb-10">
-                <h2 class="text-3xl font-bold text-white">Project Experience</h2>
-                <div class="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent"></div>
-            </div>
-            <div id="projectGrid" class="grid grid-cols-1 gap-8"></div>
-        </section>
+    <!-- Competency & Tech Stack -->
+    <section id="about">
+        <div class="flex items-center gap-4 mb-10">
+            <h2 class="text-3xl font-bold text-white">Core Competencies</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent"></div>
+        </div>
 
-        <!-- Contact Section -->
-        <section id="contact" class="pb-32">
-            <!-- ... (Contact section remains the same) ... -->
-             <div class="glass rounded-3xl p-10 md:p-14 relative overflow-hidden flex flex-col md:flex-row gap-12">
-                <div class="flex-1">
-                    <div class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4">RECRUITMENT</div>
-                    <h2 class="text-3xl font-bold mb-4 leading-snug">
-                        함께 성장할 수 있는<br>팀을 찾고 있습니다.
-                    </h2>
-                    <p class="text-gray-300 mb-8 leading-relaxed">
-                        새로운 기술 도전을 두려워하지 않고, 팀원들과의 적극적인 소통을 통해 더 나은 프로덕트를 만드는 것을 지향합니다.<br>
-                        이력서가 필요하시거나 티타임 제안을 주시고 싶다면 언제든 연락주세요.
-                    </p>
-                    <div class="flex flex-col gap-4">
-                         <div class="flex items-center gap-3 text-gray-300">
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i data-lucide="mail" class="w-5 h-5"></i></div>
-                            <span>backend.dev@example.com</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-gray-300">
-                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i data-lucide="phone" class="w-5 h-5"></i></div>
-                            <span>010-1234-5678</span>
-                        </div>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass p-6 rounded-2xl border-t-2 border-t-blue-500">
+                <div class="bg-blue-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="server" class="text-blue-400 w-6 h-6"></i>
                 </div>
-                <div class="flex-1 bg-white/5 p-6 rounded-2xl border border-white/10">
-                    <h3 class="font-bold text-lg mb-4 text-white">채용 담당자 / 동료 개발자 문의</h3>
-                    <form class="flex flex-col gap-4" id="contactForm">
-                        <input type="text" id="from_name" placeholder="성함 / 회사명" class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-400 text-white text-sm">
-                        <input type="email" id="reply_to" placeholder="이메일 주소" class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-400 text-white text-sm">
-                        <div class="relative">
-                             <textarea id="messageInput" rows="4" placeholder="간단한 제안이나 문의 내용을 적어주세요. AI가 정중한 메시지로 다듬어 드릴 수 있습니다." class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-400 text-white text-sm"></textarea>
-                             <button type="button" id="aiRefineBtn" class="absolute bottom-3 right-3 p-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded-lg transition-colors text-xs flex items-center gap-1">
-                                <i data-lucide="sparkles" class="w-3 h-3"></i> AI 다듬기
-                             </button>
-                        </div>
-                        <button type="button" id="sendEmailBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg">
-                            메시지 보내기
-                        </button>
-                         <p id="emailStatus" class="text-xs text-center text-gray-500 min-h-[1rem]"></p>
-                    </form>
-                </div>
+                <h3 class="font-bold text-lg mb-2">Backend Architecture</h3>
+                <p class="text-gray-400 text-sm">MSA 설계 및 모놀리식의 분리 경험 보유. 대용량 트래픽 처리를 위한 분산 시스템 이해.</p>
             </div>
-        </section>
-    </main>
-
-    <!-- Chat Bot Widget -->
-    <!-- ... (Chatbot remains the same) ... -->
-    <div class="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-4">
-        <div id="chatWindow" class="hidden glass w-80 h-[500px] rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-white/20">
-            <div class="bg-gradient-to-r from-blue-900/80 to-indigo-900/80 p-4 flex justify-between items-center backdrop-blur-md">
-                <div class="flex items-center gap-2">
-                    <div class="relative">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xs font-bold">AI</div>
-                        <div class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-green-400 border border-gray-900"></div>
-                    </div>
-                    <div>
-                        <span class="font-bold text-sm block">김제미의 AI 페르소나</span>
-                        <span class="text-[10px] text-blue-200">Gemini 3 Pro 기반</span>
-                    </div>
+            <div class="glass p-6 rounded-2xl border-t-2 border-t-green-500">
+                <div class="bg-green-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="database" class="text-green-400 w-6 h-6"></i>
                 </div>
-                <button id="closeChat" class="text-white/70 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <h3 class="font-bold text-lg mb-2">Database Optimization</h3>
+                <p class="text-gray-400 text-sm">Slow Query 튜닝, 인덱스 최적화, Redis 캐싱 전략 수립을 통한 DB 부하 감소.</p>
             </div>
-            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-black/20">
-                <div class="bg-white/10 self-start rounded-2xl rounded-tl-none p-3 max-w-[85%] border border-white/5">
-                    안녕하세요! 백엔드 개발자 김제미의 AI 아바타입니다. 🤖<br><br>
-                    "대용량 트래픽 처리 경험이 있나요?"<br>
-                    "주로 사용하는 기술 스택은 무엇인가요?"<br><br>
-                    처럼 면접관이 질문하듯이 물어보셔도 좋습니다.
+            <div class="glass p-6 rounded-2xl border-t-2 border-t-purple-500">
+                <div class="bg-purple-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="brain-circuit" class="text-purple-400 w-6 h-6"></i>
                 </div>
+                <h3 class="font-bold text-lg mb-2">AI Integration</h3>
+                <p class="text-gray-400 text-sm">LLM API 연동 및 프롬프트 엔지니어링. 기존 레거시 시스템에 AI 기능을 통합하는 Vibe Coding.</p>
             </div>
-            <div class="p-3 bg-white/5 border-t border-white/10">
-                <div class="flex gap-2">
-                    <input type="text" id="chatInput" placeholder="채용 관련 질문을 입력하세요..." class="flex-1 bg-transparent border-none focus:outline-none text-sm text-white placeholder-gray-500">
-                    <button id="sendChat" class="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-white/5"><i data-lucide="send" class="w-4 h-4"></i></button>
+            <div class="glass p-6 rounded-2xl border-t-2 border-t-orange-500">
+                <div class="bg-orange-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="users" class="text-orange-400 w-6 h-6"></i>
                 </div>
+                <h3 class="font-bold text-lg mb-2">Collaboration</h3>
+                <p class="text-gray-400 text-sm">명확한 API 문서화(Swagger) 및 코드 리뷰 문화 주도. 타 부서와의 원활한 커뮤니케이션.</p>
             </div>
         </div>
 
-        <button id="toggleChat" class="group flex items-center gap-3">
-             <div class="bg-black/60 backdrop-blur px-3 py-1 rounded-lg text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                무엇이든 물어보세요!
+        <div class="mt-10 glass rounded-2xl p-8">
+            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Tech Stack</h3>
+            <div class="space-y-4">
+                <div class="flex flex-col md:flex-row gap-4 md:items-center">
+                    <span class="w-24 font-bold text-gray-300">Languages</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Java 17</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Kotlin</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">JavaScript/TypeScript</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Python</span>
+                    </div>
+                </div>
+                <div class="h-px bg-white/5 w-full"></div>
+                <div class="flex flex-col md:flex-row gap-4 md:items-center">
+                    <span class="w-24 font-bold text-gray-300">Frameworks</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Spring Boot 3</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">JPA/Hibernate</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">NestJS</span>
+                    </div>
+                </div>
+                <div class="h-px bg-white/5 w-full"></div>
+                <div class="flex flex-col md:flex-row gap-4 md:items-center">
+                    <span class="w-24 font-bold text-gray-300">Infra & DB</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">AWS</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Docker/K8s</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">MySQL</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Redis</span>
+                        <span class="px-3 py-1 bg-white/10 rounded border border-white/5 text-sm">Kafka</span>
+                    </div>
+                </div>
             </div>
-            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-indigo-500/30 flex items-center justify-center hover:scale-110 transition-transform">
-                <i data-lucide="message-square-more" class="w-6 h-6 text-white"></i>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="flex items-center gap-4 mb-10">
+            <h2 class="text-3xl font-bold text-white">Project Experience</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent"></div>
+        </div>
+        <div id="projectGrid" class="grid grid-cols-1 gap-8"></div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="pb-32">
+        <div class="glass rounded-3xl p-10 md:p-14 relative overflow-hidden flex flex-col md:flex-row gap-12">
+            <div class="flex-1">
+                <div class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4">RECRUITMENT</div>
+                <h2 class="text-3xl font-bold mb-4 leading-snug">
+                    함께 성장할 수 있는<br>팀을 찾고 있습니다.
+                </h2>
+                <p class="text-gray-300 mb-8 leading-relaxed">
+                    새로운 기술 도전을 두려워하지 않고, 팀원들과의 적극적인 소통을 통해 더 나은 프로덕트를 만드는 것을 지향합니다.<br>
+                    이력서가 필요하시거나 티타임 제안을 주시고 싶다면 언제든 연락주세요.
+                </p>
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-3 text-gray-300">
+                        <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i data-lucide="mail" class="w-5 h-5"></i></div>
+                        <span>backend.dev@example.com</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-gray-300">
+                        <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                        <span>010-1234-5678</span>
+                    </div>
+                </div>
             </div>
-        </button>
+            <div class="flex-1 bg-white/5 p-6 rounded-2xl border border-white/10">
+                <h3 class="font-bold text-lg mb-4 text-white">채용 담당자 / 동료 개발자 문의</h3>
+                <form class="flex flex-col gap-4" id="contactForm">
+                    <input type="text" id="from_name" placeholder="성함 / 회사명" class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-400 text-white text-sm transition-colors">
+                    <input type="email" id="reply_to" placeholder="이메일 주소" class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-400 text-white text-sm transition-colors">
+                    <div class="relative">
+                        <textarea id="messageInput" rows="4" placeholder="간단한 제안이나 문의 내용을 적어주세요. AI가 정중한 메시지로 다듬어 드릴 수 있습니다." class="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-400 text-white text-sm transition-colors"></textarea>
+                        <button type="button" id="aiRefineBtn" class="absolute bottom-3 right-3 p-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded-lg transition-colors text-xs flex items-center gap-1">
+                            <i data-lucide="sparkles" class="w-3 h-3"></i> AI 다듬기
+                        </button>
+                    </div>
+                    <button type="button" id="sendEmailBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg">
+                        메시지 보내기
+                    </button>
+                    <p id="emailStatus" class="text-xs text-center text-gray-500 min-h-[1rem]"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Chat Bot Widget -->
+<div class="fixed bottom-24 right-6 z-50 flex flex-col items-end gap-4">
+    <div id="chatWindow" class="hidden glass w-80 h-[500px] rounded-2xl flex flex-col overflow-hidden shadow-2xl border border-white/20">
+        <div class="bg-gradient-to-r from-blue-900/80 to-indigo-900/80 p-4 flex justify-between items-center backdrop-blur-md">
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xs font-bold">AI</div>
+                    <div class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-green-400 border border-gray-900"></div>
+                </div>
+                <div>
+                    <span class="font-bold text-sm block">김제미의 AI 페르소나</span>
+                    <span class="text-[10px] text-blue-200">Gemini 3 Pro 기반</span>
+                </div>
+            </div>
+            <button id="closeChat" class="text-white/70 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm bg-black/20">
+            <div class="bg-white/10 self-start rounded-2xl rounded-tl-none p-3 max-w-[85%] border border-white/5">
+                안녕하세요! 백엔드 개발자 김제미의 AI 아바타입니다. 🤖<br><br>
+                "대용량 트래픽 처리 경험이 있나요?"<br>
+                "주로 사용하는 기술 스택은 무엇인가요?"<br><br>
+                처럼 면접관이 질문하듯이 물어보셔도 좋습니다.
+            </div>
+        </div>
+        <div class="p-3 bg-white/5 border-t border-white/10">
+            <div class="flex gap-2">
+                <input type="text" id="chatInput" placeholder="채용 관련 질문을 입력하세요..." class="flex-1 bg-transparent border-none focus:outline-none text-sm text-white placeholder-gray-500">
+                <button id="sendChat" class="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-white/5"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
+        </div>
     </div>
 
-    <footer class="text-center py-8 text-gray-500 text-xs relative z-10">
-        <p>This portfolio is powered by Gemini 3 Pro Vibe Coding.</p>
-        <p class="mt-1">&copy; 2025 Kim Gemini. All rights reserved.</p>
-    </footer>
+    <button id="toggleChat" class="group flex items-center gap-3">
+        <div class="bg-black/60 backdrop-blur px-3 py-1 rounded-lg text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
+            무엇이든 물어보세요!
+        </div>
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-indigo-500/30 flex items-center justify-center hover:scale-110 transition-transform">
+            <i data-lucide="message-square-more" class="w-6 h-6 text-white"></i>
+        </div>
+    </button>
+</div>
 
-    <script>
-        lucide.createIcons();
+<footer class="text-center py-8 text-gray-500 text-xs relative z-10">
+    <p>This portfolio is powered by Gemini 3 Pro Vibe Coding.</p>
+    <p class="mt-1">&copy; 2025 Kim Gemini. All rights reserved.</p>
+</footer>
 
-        // 1. EmailJS 설정
-        const EMAILJS_PUBLIC_KEY = "00m34SHiIp-VEKgiF";
-        const EMAILJS_SERVICE_ID = "service_pzyaepm";
-        const EMAILJS_TEMPLATE_ID = "template_sps10oh";
-        
-        (function(){
-            if(EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
-                emailjs.init(EMAILJS_PUBLIC_KEY);
-            }
-        })();
+<script>
+    lucide.createIcons();
 
-        // 2. Gemini API 설정
-        const apiKey = "AIzaSyAwqlXx-8Cy4pmrI12vuZf5c4HCpZijpVI";
+    // 1. EmailJS 설정
+    const EMAILJS_PUBLIC_KEY = "00m34SHiIp-VEKgiF";
+    const EMAILJS_SERVICE_ID = "service_pzyaepm";
+    const EMAILJS_TEMPLATE_ID = "template_sps10oh";
 
-        // --- Data: Projects ---
-        const projects = [
-            {
-                id: 1,
-                title: "대규모 이커머스 트랜잭션 최적화",
-                summary: "일일 100만 건 주문 처리를 위한 MSA 전환 및 Kafka 비동기 큐 도입",
-                role: "Backend Lead",
-                duration: "2024.01 - 2024.08 (8개월)",
-                tech: ["Spring Boot 3", "Kafka", "Redis", "MySQL", "Docker"],
-                metric: "TPS 500% ↑",
-                challenge: "기존 모놀리식 구조에서는 '타임딜' 이벤트 시 주문 요청이 폭주하면 DB 락(Lock) 대기 시간이 길어져 전체 서버가 다운되는 현상이 빈번했습니다.",
-                solution: [
-                    "주문 접수와 결제/재고 차감 로직을 분리하고 Apache Kafka를 도입하여 비동기 이벤트 기반 아키텍처로 전환했습니다.",
-                    "Redis Lua Script를 활용하여 재고 차감의 원자성(Atomicity)을 보장하면서 DB 접근을 최소화했습니다.",
-                    "부하 테스트(nGrinder)를 수행하며 병목 구간을 식별하고 톰캣 스레드 풀 및 DB 커넥션 풀을 최적화했습니다."
-                ],
-                result: "초당 처리량(TPS)을 500에서 2500으로 5배 향상시켰으며, 이벤트 기간 동안 서버 다운타임 0건을 달성했습니다.",
-                color: "from-blue-600 to-cyan-500"
-            },
-            {
-                id: 2,
-                title: "사내 레거시 검색 엔진 AI 고도화",
-                summary: "Elasticsearch 기반 검색에 Vector Search(RAG) 도입",
-                role: "Backend Engineer",
-                duration: "2023.05 - 2023.10 (6개월)",
-                tech: ["Python", "FastAPI", "Elasticsearch", "Gemini API", "LangChain"],
-                metric: "검색 정확도 40% ↑",
-                challenge: "기존 키워드 기반 검색(TF-IDF)은 사용자의 의도를 파악하지 못해 '배송 느린거'라고 검색하면 '배송'과 '느린'이라는 단어가 포함된 긍정 리뷰까지 검색되는 문제가 있었습니다.",
-                solution: [
-                    "Gemini Embedding API를 활용하여 상품 리뷰 데이터를 벡터화하고 Elasticsearch k-NN 검색을 구현했습니다.",
-                    "하이브리드 검색(키워드 + 벡터)을 적용하여 정확한 모델명 검색과 의미 기반 검색의 장점을 모두 취했습니다.",
-                    "LangChain을 활용하여 검색 결과 요약 기능을 API에 추가했습니다."
-                ],
-                result: "검색 결과 클릭률(CTR)이 15% 상승했으며, 고객센터로 유입되는 '검색 불편' 관련 불만이 40% 감소했습니다.",
-                color: "from-purple-600 to-pink-500"
-            }
-        ];
+    (function(){
+        // 초기화: Public Key 사용
+        if(typeof emailjs !== 'undefined') {
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+        }
+    })();
 
-        // --- Render Projects ---
-        const projectGrid = document.getElementById('projectGrid');
-        
-        projects.forEach(project => {
-            const card = document.createElement('div');
-            card.className = "glass glass-card rounded-2xl overflow-hidden group flex flex-col md:flex-row min-h-[250px]";
-            
-            card.innerHTML = `
+    // 2. Gemini API 설정
+    const apiKey = "AIzaSyAwqlXx-8Cy4pmrI12vuZf5c4HCpZijpVI";
+
+    // --- Data: Projects ---
+    const projects = [
+        {
+            id: 1,
+            title: "대규모 이커머스 트랜잭션 최적화",
+            summary: "일일 100만 건 주문 처리를 위한 MSA 전환 및 Kafka 비동기 큐 도입",
+            role: "Backend Lead",
+            duration: "2024.01 - 2024.08 (8개월)",
+            tech: ["Spring Boot 3", "Kafka", "Redis", "MySQL", "Docker"],
+            metric: "TPS 500% ↑",
+            challenge: "기존 모놀리식 구조에서는 '타임딜' 이벤트 시 주문 요청이 폭주하면 DB 락(Lock) 대기 시간이 길어져 전체 서버가 다운되는 현상이 빈번했습니다.",
+            solution: [
+                "주문 접수와 결제/재고 차감 로직을 분리하고 Apache Kafka를 도입하여 비동기 이벤트 기반 아키텍처로 전환했습니다.",
+                "Redis Lua Script를 활용하여 재고 차감의 원자성(Atomicity)을 보장하면서 DB 접근을 최소화했습니다.",
+                "부하 테스트(nGrinder)를 수행하며 병목 구간을 식별하고 톰캣 스레드 풀 및 DB 커넥션 풀을 최적화했습니다."
+            ],
+            result: "초당 처리량(TPS)을 500에서 2500으로 5배 향상시켰으며, 이벤트 기간 동안 서버 다운타임 0건을 달성했습니다.",
+            color: "from-blue-600 to-cyan-500"
+        },
+        {
+            id: 2,
+            title: "사내 레거시 검색 엔진 AI 고도화",
+            summary: "Elasticsearch 기반 검색에 Vector Search(RAG) 도입",
+            role: "Backend Engineer",
+            duration: "2023.05 - 2023.10 (6개월)",
+            tech: ["Python", "FastAPI", "Elasticsearch", "Gemini API", "LangChain"],
+            metric: "검색 정확도 40% ↑",
+            challenge: "기존 키워드 기반 검색(TF-IDF)은 사용자의 의도를 파악하지 못해 '배송 느린거'라고 검색하면 '배송'과 '느린'이라는 단어가 포함된 긍정 리뷰까지 검색되는 문제가 있었습니다.",
+            solution: [
+                "Gemini Embedding API를 활용하여 상품 리뷰 데이터를 벡터화하고 Elasticsearch k-NN 검색을 구현했습니다.",
+                "하이브리드 검색(키워드 + 벡터)을 적용하여 정확한 모델명 검색과 의미 기반 검색의 장점을 모두 취했습니다.",
+                "LangChain을 활용하여 검색 결과 요약 기능을 API에 추가했습니다."
+            ],
+            result: "검색 결과 클릭률(CTR)이 15% 상승했으며, 고객센터로 유입되는 '검색 불편' 관련 불만이 40% 감소했습니다.",
+            color: "from-purple-600 to-pink-500"
+        }
+    ];
+
+    // --- Render Projects ---
+    const projectGrid = document.getElementById('projectGrid');
+
+    projects.forEach(project => {
+        const card = document.createElement('div');
+        card.className = "glass glass-card rounded-2xl overflow-hidden group flex flex-col md:flex-row min-h-[250px]";
+
+        card.innerHTML = `
                 <div class="md:w-1/3 bg-gray-800 relative overflow-hidden min-h-[200px] md:min-h-auto">
                     <div class="absolute inset-0 bg-gradient-to-br ${project.color} opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
                     <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
@@ -468,7 +473,7 @@
                     </div>
                     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;"></div>
                 </div>
-                
+
                 <div class="md:w-2/3 p-8 flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-start mb-2">
@@ -485,197 +490,203 @@
                     </div>
                 </div>
             `;
-            
-            card.addEventListener('click', () => openModal(project));
-            projectGrid.appendChild(card);
+
+        card.addEventListener('click', () => openModal(project));
+        projectGrid.appendChild(card);
+    });
+
+    // --- Modal Logic ---
+    const modal = document.getElementById('projectModal');
+    const modalContent = document.getElementById('modalContent');
+    const closeModal = document.getElementById('closeModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    function openModal(project) {
+        document.getElementById('modalTitle').innerText = project.title;
+        document.getElementById('modalRole').innerText = project.role;
+        document.getElementById('modalDuration').innerText = project.duration;
+        document.getElementById('modalMetric').innerText = project.metric;
+        document.getElementById('modalChallenge').innerText = project.challenge;
+        document.getElementById('modalResult').innerText = project.result;
+
+        const techContainer = document.getElementById('modalTechStack');
+        techContainer.innerHTML = project.tech.map(t => `<span class="px-2 py-1 bg-blue-500/20 text-blue-200 rounded text-xs">${t}</span>`).join('');
+
+        const solutionContainer = document.getElementById('modalSolution');
+        solutionContainer.innerHTML = project.solution.map(s => `<li>${s}</li>`).join('');
+
+        lucide.createIcons();
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            modalContent.classList.remove('opacity-0', 'scale-95');
+            modalContent.classList.add('opacity-100', 'scale-100');
         });
+        document.body.style.overflow = 'hidden';
+    }
 
-        // --- Modal Logic (Fixed with Animations) ---
-        const modal = document.getElementById('projectModal');
-        const modalContent = document.getElementById('modalContent');
-        const closeModal = document.getElementById('closeModal');
-        const modalOverlay = document.getElementById('modalOverlay');
+    function closeModalFunc() {
+        modalContent.classList.remove('opacity-100', 'scale-100');
+        modalContent.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }, 300);
+    }
 
-        function openModal(project) {
-            // Data Population
-            document.getElementById('modalTitle').innerText = project.title;
-            document.getElementById('modalRole').innerText = project.role;
-            document.getElementById('modalDuration').innerText = project.duration;
-            document.getElementById('modalMetric').innerText = project.metric;
-            document.getElementById('modalChallenge').innerText = project.challenge;
-            document.getElementById('modalResult').innerText = project.result;
+    closeModal.addEventListener('click', closeModalFunc);
+    modalOverlay.addEventListener('click', closeModalFunc);
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModalFunc(); });
 
-            const techContainer = document.getElementById('modalTechStack');
-            techContainer.innerHTML = project.tech.map(t => `<span class="px-2 py-1 bg-blue-500/20 text-blue-200 rounded text-xs">${t}</span>`).join('');
+    // --- EmailJS Logic (Validation + Template Match) ---
+    const sendEmailBtn = document.getElementById('sendEmailBtn');
+    const emailStatus = document.getElementById('emailStatus');
 
-            const solutionContainer = document.getElementById('modalSolution');
-            solutionContainer.innerHTML = project.solution.map(s => `<li>${s}</li>`).join('');
+    sendEmailBtn.addEventListener('click', function() {
+        const from_name = document.getElementById('from_name').value.trim();
+        const reply_to = document.getElementById('reply_to').value.trim();
+        const message = document.getElementById('messageInput').value.trim();
 
-            lucide.createIcons();
-
-            // Display Logic with Animation
-            modal.classList.remove('hidden');
-            
-            // Allow browser paint cycle before changing opacity for transition
-            requestAnimationFrame(() => {
-                modalContent.classList.remove('opacity-0', 'scale-95');
-                modalContent.classList.add('opacity-100', 'scale-100');
-            });
-            
-            document.body.style.overflow = 'hidden';
+        // 1. 빈 값 검사
+        if(!from_name || !reply_to || !message) {
+            emailStatus.innerText = "모든 항목을 입력해주세요.";
+            emailStatus.className = "text-xs text-center text-red-400 mt-1";
+            return;
         }
 
-        function closeModalFunc() {
-            // Animate out
-            modalContent.classList.remove('opacity-100', 'scale-100');
-            modalContent.classList.add('opacity-0', 'scale-95');
-            
-            // Hide after animation finishes
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.style.overflow = '';
-            }, 300); // Match Tailwind duration-300
+        // 2. 이메일 유효성 검사 (Regex)
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(reply_to)) {
+            emailStatus.innerText = "올바른 이메일 형식을 입력해주세요.";
+            emailStatus.className = "text-xs text-center text-red-400 mt-1";
+
+            // 시각적 피드백: 빨간 테두리 추가 및 흔들림 효과
+            const emailInput = document.getElementById('reply_to');
+            emailInput.classList.add('input-error');
+            setTimeout(() => emailInput.classList.remove('input-error'), 1000);
+            return;
         }
 
-        closeModal.addEventListener('click', closeModalFunc);
-        modalOverlay.addEventListener('click', closeModalFunc);
-        document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModalFunc(); });
+        const originalBtnText = sendEmailBtn.innerText;
+        sendEmailBtn.innerText = "전송 중...";
+        sendEmailBtn.disabled = true;
 
-        // --- EmailJS Logic ---
-        const sendEmailBtn = document.getElementById('sendEmailBtn');
-        const emailStatus = document.getElementById('emailStatus');
+        // 3. 템플릿 변수 매칭 (스크린샷 기준)
+        // 템플릿: {{name}}, {{email}}, {{message}}
+        const templateParams = {
+            name: from_name,
+            email: reply_to,
+            message: message
+        };
 
-        sendEmailBtn.addEventListener('click', function() {
-            if(EMAILJS_PUBLIC_KEY === "YOUR_PUBLIC_KEY") {
-                alert("EmailJS 키가 설정되지 않았습니다. 코드를 확인해주세요.");
-                return;
-            }
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+            .then(function() {
+                sendEmailBtn.innerText = "전송 성공!";
+                sendEmailBtn.className = "w-full bg-green-600 text-white font-bold py-3 rounded-lg transition-all shadow-lg";
+                emailStatus.innerText = "메시지가 성공적으로 전달되었습니다.";
+                emailStatus.className = "text-xs text-center text-green-400 mt-1";
 
-            const from_name = document.getElementById('from_name').value;
-            const reply_to = document.getElementById('reply_to').value;
-            const message = document.getElementById('messageInput').value;
-
-            if(!from_name || !reply_to || !message) {
-                emailStatus.innerText = "모든 항목을 입력해주세요.";
-                emailStatus.className = "text-xs text-center text-red-400 mt-1";
-                return;
-            }
-
-            const originalBtnText = sendEmailBtn.innerText;
-            sendEmailBtn.innerText = "전송 중...";
-            sendEmailBtn.disabled = true;
-
-            const templateParams = { from_name, reply_to, message };
-
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                .then(function() {
-                    sendEmailBtn.innerText = "전송 성공!";
-                    sendEmailBtn.className = "w-full bg-green-600 text-white font-bold py-3 rounded-lg transition-all shadow-lg";
-                    emailStatus.innerText = "메시지가 성공적으로 전달되었습니다.";
-                    emailStatus.className = "text-xs text-center text-green-400 mt-1";
-                    
-                    setTimeout(() => {
-                        sendEmailBtn.innerText = originalBtnText;
-                        sendEmailBtn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg";
-                        sendEmailBtn.disabled = false;
-                        document.getElementById('contactForm').reset();
-                    }, 3000);
-                }, function(error) {
-                    console.error('FAILED...', error);
-                    sendEmailBtn.innerText = "전송 실패";
-                    emailStatus.innerText = "전송에 실패했습니다. 다시 시도해주세요.";
+                setTimeout(() => {
+                    sendEmailBtn.innerText = originalBtnText;
+                    sendEmailBtn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg";
                     sendEmailBtn.disabled = false;
-                });
-        });
+                    document.getElementById('contactForm').reset();
+                }, 3000);
+            }, function(error) {
+                console.error('FAILED...', error);
+                sendEmailBtn.innerText = "전송 실패";
+                emailStatus.innerText = "전송에 실패했습니다. 잠시 후 다시 시도해주세요.";
+                sendEmailBtn.disabled = false;
+            });
+    });
 
-        // --- Gemini API Logic ---
-        async function callGemini(prompt, systemInstruction = "") {
-            if (!apiKey) {
-                alert("Gemini API Key를 코드에 설정해주세요.");
-                return null;
-            }
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] }
-            };
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
-            } catch (error) {
-                console.error(error);
-                return null;
-            }
+    // --- Gemini API Logic ---
+    async function callGemini(prompt, systemInstruction = "") {
+        if (!apiKey) {
+            alert("Gemini API Key 오류");
+            return null;
+        }
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            systemInstruction: { parts: [{ text: systemInstruction }] }
+        };
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
+    // Email Refiner (AI)
+    const messageInput = document.getElementById('messageInput');
+    const aiRefineBtn = document.getElementById('aiRefineBtn');
+    const emailStatusForAI = document.getElementById('emailStatus');
+
+    aiRefineBtn.addEventListener('click', async () => {
+        const originalText = messageInput.value.trim();
+        if (!originalText) {
+            emailStatusForAI.innerText = "내용을 입력해주세요.";
+            return;
+        }
+        const originalBtnHtml = aiRefineBtn.innerHTML;
+        aiRefineBtn.innerHTML = `<span class="loader border-blue-400 border-t-transparent w-3 h-3"></span>`;
+        aiRefineBtn.disabled = true;
+
+        const systemPrompt = "당신은 채용 담당자에게 보내는 메일을 교정해주는 전문가입니다. 사용자의 입력을 예의 바르고 명확한 '입사 지원' 또는 '커피챗 요청' 메일 톤으로 한국어로 수정해주세요.";
+        const refinedText = await callGemini(originalText, systemPrompt);
+
+        if (refinedText) {
+            messageInput.value = refinedText;
+            emailStatusForAI.innerText = "AI가 메시지를 전문적인 톤으로 다듬었습니다.";
+            emailStatusForAI.className = "text-xs text-center text-green-400 mt-1";
+        } else {
+            emailStatusForAI.innerText = "API 오류가 발생했습니다.";
         }
 
-        // Email Refiner (AI)
-        const messageInput = document.getElementById('messageInput');
-        const aiRefineBtn = document.getElementById('aiRefineBtn');
-        const emailStatusForAI = document.getElementById('emailStatus'); 
+        aiRefineBtn.innerHTML = originalBtnHtml;
+        aiRefineBtn.disabled = false;
+    });
 
-        aiRefineBtn.addEventListener('click', async () => {
-            const originalText = messageInput.value.trim();
-            if (!originalText) {
-                emailStatusForAI.innerText = "내용을 입력해주세요.";
-                return;
-            }
-            const originalBtnHtml = aiRefineBtn.innerHTML;
-            aiRefineBtn.innerHTML = `<span class="loader border-blue-400 border-t-transparent w-3 h-3"></span>`;
-            aiRefineBtn.disabled = true;
+    // Chatbot (AI)
+    const toggleChat = document.getElementById('toggleChat');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatInput = document.getElementById('chatInput');
+    const sendChat = document.getElementById('sendChat');
+    const chatMessages = document.getElementById('chatMessages');
 
-            const systemPrompt = "당신은 채용 담당자에게 보내는 메일을 교정해주는 전문가입니다. 사용자의 입력을 예의 바르고 명확한 '입사 지원' 또는 '커피챗 요청' 메일 톤으로 한국어로 수정해주세요.";
-            const refinedText = await callGemini(originalText, systemPrompt);
+    toggleChat.addEventListener('click', () => {
+        chatWindow.classList.toggle('hidden');
+        if(!chatWindow.classList.contains('hidden')) {
+            chatWindow.classList.add('chat-anim');
+            chatInput.focus();
+        }
+    });
+    document.getElementById('closeChat').addEventListener('click', () => chatWindow.classList.add('hidden'));
 
-            if (refinedText) {
-                messageInput.value = refinedText;
-                emailStatusForAI.innerText = "AI가 메시지를 전문적인 톤으로 다듬었습니다.";
-                emailStatusForAI.className = "text-xs text-center text-green-400 mt-1";
-            } else {
-                emailStatusForAI.innerText = "API 오류가 발생했습니다. (API Key 확인 필요)";
-            }
+    async function handleChat() {
+        const text = chatInput.value.trim();
+        if(!text) return;
 
-            aiRefineBtn.innerHTML = originalBtnHtml;
-            aiRefineBtn.disabled = false;
-        });
+        const userDiv = document.createElement('div');
+        userDiv.className = "bg-blue-600/80 text-white self-end rounded-2xl rounded-tr-none p-3 max-w-[85%] text-sm";
+        userDiv.innerText = text;
+        chatMessages.appendChild(userDiv);
+        chatInput.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Chatbot (AI)
-        const toggleChat = document.getElementById('toggleChat');
-        const chatWindow = document.getElementById('chatWindow');
-        const chatInput = document.getElementById('chatInput');
-        const sendChat = document.getElementById('sendChat');
-        const chatMessages = document.getElementById('chatMessages');
+        const loadDiv = document.createElement('div');
+        loadDiv.className = "bg-white/10 self-start rounded-2xl rounded-tl-none p-3 max-w-[85%]";
+        loadDiv.innerHTML = `<div class="flex gap-1"><div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.1s"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div></div>`;
+        chatMessages.appendChild(loadDiv);
 
-        toggleChat.addEventListener('click', () => {
-            chatWindow.classList.toggle('hidden');
-            if(!chatWindow.classList.contains('hidden')) {
-                chatWindow.classList.add('chat-anim');
-                chatInput.focus();
-            }
-        });
-        document.getElementById('closeChat').addEventListener('click', () => chatWindow.classList.add('hidden'));
-
-        async function handleChat() {
-            const text = chatInput.value.trim();
-            if(!text) return;
-
-            const userDiv = document.createElement('div');
-            userDiv.className = "bg-blue-600/80 text-white self-end rounded-2xl rounded-tr-none p-3 max-w-[85%] text-sm";
-            userDiv.innerText = text;
-            chatMessages.appendChild(userDiv);
-            chatInput.value = "";
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            const loadDiv = document.createElement('div');
-            loadDiv.className = "bg-white/10 self-start rounded-2xl rounded-tl-none p-3 max-w-[85%]";
-            loadDiv.innerHTML = `<div class="flex gap-1"><div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.1s"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay:0.2s"></div></div>`;
-            chatMessages.appendChild(loadDiv);
-
-            const persona = `
+        const persona = `
                 당신은 5년차 백엔드 개발자 '김제미'의 AI 페르소나입니다. 
                 현재 구직 중이며, 면접관이나 채용 담당자와 대화하고 있습니다.
                 [핵심 역량]
@@ -687,31 +698,31 @@
                 - 겸손하지만 자신감 있는 태도를 유지합니다.
                 - 한국어로 답변하세요.
             `;
-            
-            const response = await callGemini(text, persona);
-            
-            chatMessages.removeChild(loadDiv);
-            if(response) {
-                const botDiv = document.createElement('div');
-                botDiv.className = "bg-white/10 text-gray-200 self-start rounded-2xl rounded-tl-none p-3 max-w-[85%] border border-white/5 text-sm leading-relaxed";
-                botDiv.innerText = response;
-                chatMessages.appendChild(botDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+
+        const response = await callGemini(text, persona);
+
+        chatMessages.removeChild(loadDiv);
+        if(response) {
+            const botDiv = document.createElement('div');
+            botDiv.className = "bg-white/10 text-gray-200 self-start rounded-2xl rounded-tl-none p-3 max-w-[85%] border border-white/5 text-sm leading-relaxed";
+            botDiv.innerText = response;
+            chatMessages.appendChild(botDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+    }
 
-        sendChat.addEventListener('click', handleChat);
-        chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat() });
+    sendChat.addEventListener('click', handleChat);
+    chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat() });
 
-        // Blob Animation
-        document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            document.querySelectorAll('.blob').forEach((blob, i) => {
-                const speed = (i + 1) * 20;
-                blob.style.transform = `translate(${(x - 0.5) * speed}px, ${(y - 0.5) * speed}px) scale(${1 + i * 0.05})`;
-            });
+    // Blob Animation
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        document.querySelectorAll('.blob').forEach((blob, i) => {
+            const speed = (i + 1) * 20;
+            blob.style.transform = `translate(${(x - 0.5) * speed}px, ${(y - 0.5) * speed}px) scale(${1 + i * 0.05})`;
         });
-    </script>
+    });
+</script>
 </body>
 </html>
