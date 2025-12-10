@@ -6,80 +6,75 @@
     <title>Infra-Aware Backend Engineer | 서정빈</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- EmailJS SDK 추가 -->
+    <!-- Three.js 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
+        /* 부드러운 스크롤 효과 적용 */
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #020617;
-            background-image: radial-gradient(at 50% 0%, #1e293b 0%, #020617 70%);
+            background-color: #000000;
             color: #ffffff;
             overflow-x: hidden;
+            margin: 0;
         }
 
-        /* 변경된 화려한 배경 Blobs (Cyan, Blue, Emerald 테마) */
-        .blob {
-            position: absolute;
-            filter: blur(80px);
+        /* 3D Canvas 컨테이너 */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
-            opacity: 0.6;
-            animation: float 10s infinite ease-in-out alternate;
-        }
-        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, #06b6d4 0%, #3b82f6 100%); animation-delay: 0s; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; opacity: 0.5; }
-        .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #6366f1 0%, #8b5cf6 100%); animation-delay: -2s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; opacity: 0.4; }
-        .blob-3 { top: 40%; left: 30%; width: 40vw; height: 40vw; background: radial-gradient(circle, #10b981 0%, #0ea5e9 100%); animation-delay: -4s; opacity: 0.3; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            100% { transform: translate(30px, -30px) rotate(10deg) scale(1.05); }
+            /* Deep Space Gradient */
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
         }
 
-        /* 향상된 Glassmorphism */
+        /* Space Glassmorphism */
         .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(20, 30, 50, 0.35); /* 약간 푸른빛이 도는 어두운 유리 */
+            backdrop-filter: blur(8px); /* 블러를 줄여서 뒷배경 별이 살짝 보이게 */
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(100, 200, 255, 0.08); /* 얇은 사이안 색 테두리 */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(100, 200, 255, 0.15);
         }
 
         .glass-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
+            background: rgba(13, 18, 30, 0.4);
+            backdrop-filter: blur(6px); /* 별이 더 잘 보이도록 */
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: 0.5s;
-        }
-
-        .glass-card:hover::before { left: 100%; }
 
         .glass-card:hover {
             transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); /* 호버 시 네온 글로우 */
+            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(13, 18, 30, 0.6);
         }
 
+        /* 텍스트 그라데이션 - 우주 느낌 (Cyan to Purple) */
         .text-gradient {
-            background: linear-gradient(to right, #22d3ee 0%, #3b82f6 100%);
+            background: linear-gradient(to right, #22d3ee 0%, #a78bfa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 900;
         }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #090A0F; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
 
         .loader {
             border: 3px solid rgba(255,255,255,0.1);
@@ -92,17 +87,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .input-error {
-            border-color: #ef4444 !important;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
-            animation: shake 0.3s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
         .chat-anim { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(50px) scale(0.9); }
@@ -112,13 +96,8 @@
 </head>
 <body class="relative min-h-screen selection:bg-cyan-500 selection:text-white">
 
-<!-- Dynamic Background Layer -->
-<div class="fixed inset-0 overflow-hidden pointer-events-none">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-120 mix-blend-overlay"></div>
-</div>
+<!-- 3D Background Container -->
+<div id="canvas-container"></div>
 
 <!-- Navigation -->
 <nav class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
@@ -145,7 +124,7 @@
 <!-- Project Details Modal -->
 <div id="projectModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4 transition-opacity duration-300">
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="modalOverlay"></div>
-    <div class="glass w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col relative transform transition-all duration-300 scale-95 opacity-0 shadow-2xl border border-white/10" id="modalContent" style="background: rgba(15, 23, 42, 0.6);">
+    <div class="glass w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col relative transform transition-all duration-300 scale-95 opacity-0 shadow-2xl border border-white/10" id="modalContent" style="background: rgba(10, 15, 30, 0.9);">
 
         <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
             <h3 id="modalTitle" class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">Project Title</h3>
@@ -209,11 +188,8 @@
 <main class="relative z-10 max-w-7xl mx-auto px-6 py-12 md:py-24 flex flex-col gap-40">
 
     <!-- Hero Section -->
-    <section id="home" class="min-h-[85vh] flex flex-col justify-center items-start relative">
-        <div class="glass p-12 md:p-20 rounded-[3rem] w-full relative overflow-hidden group border border-white/10">
-            <div class="absolute right-0 top-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-            <div class="absolute left-0 bottom-0 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl -ml-10 -mb-10 pointer-events-none"></div>
-
+    <section id="home" class="min-h-[85vh] flex flex-col justify-center items-start relative pointer-events-none">
+        <div class="glass p-12 md:p-20 rounded-[3rem] w-full relative overflow-hidden group border border-white/10 pointer-events-auto">
             <div class="relative z-10">
                 <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
                         <span class="relative flex h-3 w-3">
@@ -228,7 +204,7 @@
                     기록으로 <span class="text-gradient">팀을 돕습니다.</span>
                 </h1>
 
-                <p class="text-lg md:text-2xl text-gray-400 max-w-4xl mb-12 leading-relaxed font-light">
+                <p class="text-lg md:text-2xl text-gray-300 max-w-4xl mb-12 leading-relaxed font-light">
                     <strong class="text-white">원활한 협업</strong>이야말로 최고의 기술력이라 믿습니다.<br>
                     문제 해결 과정을 투명하게 공유하고, 경험을 <strong class="text-cyan-400">팀의 자산</strong>으로 남기며<br>
                     동료들과 함께 <strong class="text-blue-400">성장하는 문화</strong>를 만듭니다.<br><br>
@@ -380,7 +356,7 @@
                     <span class="text-gray-400">위기를 기회로,</span><br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">책임감 있는 동료를 찾으시나요?</span>
                 </h2>
-                <p class="text-gray-400 mb-10 leading-relaxed text-lg">
+                <p class="text-gray-300 mb-10 leading-relaxed text-lg">
                     갑작스러운 상황에도 흔들리지 않고 프로젝트를 완수했습니다.<br>
                     AI를 똑똑하게 활용해 효율적으로 일하며, 안정적인 서비스 운영을 최우선으로 생각합니다.<br>
                     커피챗이나 채용 제안은 언제든 환영합니다.
@@ -819,18 +795,101 @@
     sendChat.addEventListener('click', handleChat);
     chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat() });
 
-    // Blob Animation
-    document.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
+    // --- Three.js "Space" Setup ---
+    const scene = new THREE.Scene();
 
-        const blob1 = document.querySelector('.blob-1');
-        const blob2 = document.querySelector('.blob-2');
-        const blob3 = document.querySelector('.blob-3');
+    // Add Fog for slight depth, but keep space clear
+    scene.fog = new THREE.FogExp2(0x090A0F, 0.002);
 
-        if(blob1) blob1.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
-        if(blob2) blob2.style.transform = `translate(${x * -20}px, ${y * -20}px)`;
-        if(blob3) blob3.style.transform = `translate(${x * 10}px, ${y * -10}px)`;
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+    // Starfield
+    const starGeometry = new THREE.BufferGeometry();
+    const starCount = 5000;
+    const posArray = new Float32Array(starCount * 3);
+    const colorArray = new Float32Array(starCount * 3); // For star colors
+
+    for(let i = 0; i < starCount * 3; i+=3) {
+        // Random positions in a sphere-like volume
+        const r = 800 * Math.cbrt(Math.random()); // Radius
+        const theta = Math.random() * 2 * Math.PI;
+        const phi = Math.acos(2 * Math.random() - 1);
+
+        posArray[i] = r * Math.sin(phi) * Math.cos(theta);
+        posArray[i+1] = r * Math.sin(phi) * Math.sin(theta);
+        posArray[i+2] = r * Math.cos(phi);
+
+        // Random star colors (White, Blue-ish, slightly Pink)
+        const colorType = Math.random();
+        if (colorType > 0.8) {
+            // Blue-ish
+            colorArray[i] = 0.5; colorArray[i+1] = 0.7; colorArray[i+2] = 1.0;
+        } else if (colorType > 0.9) {
+            // Pink-ish
+            colorArray[i] = 1.0; colorArray[i+1] = 0.7; colorArray[i+2] = 0.8;
+        } else {
+            // White
+            colorArray[i] = 1.0; colorArray[i+1] = 1.0; colorArray[i+2] = 1.0;
+        }
+    }
+
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    starGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+    const starMaterial = new THREE.PointsMaterial({
+        size: 1.5,
+        vertexColors: true, // Use the colors we set
+        transparent: true,
+        opacity: 0.8,
+        sizeAttenuation: true // Stars get smaller far away
+    });
+
+    const starMesh = new THREE.Points(starGeometry, starMaterial);
+    scene.add(starMesh);
+
+    camera.position.z = 100; // Pull back to see the field
+
+    // Mouse Interaction Variables
+    let mouseX = 0;
+    let mouseY = 0;
+
+    document.addEventListener('mousemove', (event) => {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // Animation Loop
+    const clock = new THREE.Clock();
+
+    function animate() {
+        const elapsedTime = clock.getElapsedTime();
+
+        // Slow rotation of the entire galaxy
+        starMesh.rotation.y = elapsedTime * 0.05;
+        starMesh.rotation.z = elapsedTime * 0.01;
+
+        // Interactive subtle rotation based on mouse
+        starMesh.rotation.x += mouseY * 0.0005;
+        starMesh.rotation.y += mouseX * 0.0005;
+
+        // Slight forward movement effect? Optional.
+        // For now, simple rotation is elegant.
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
 </script>
 </body>
